@@ -2,7 +2,7 @@
 
 The WAV export plugin for [OxiGuitar](https://github.com/mateusrdp/oxiguitar), a free, open-source guitar tablature and score viewer, editor and player for Windows, macOS and Linux. It adds **File, Export, WAV Audio**: OxiGuitar plays the whole song, or the selected bars, through its instruments, amps and mixer faster than real time, as written or at your practice speed, and this plugin writes the sound as a WAV file.
 
-- Plugin file `wav.oxp`, id `oxiguitar.wav`. The format is in its settings (Tools, Plugins, WAV export, Settings): 24-bit at 48 kHz by default; 16-bit (with dither), 24-bit or 32-bit float, 44.1 or 48 kHz.
+- Plugin file `wav.oxp`, id `oxiguitar.wav`. The format is in its dialog, **Plugins → WAV Export Settings…** (kept with **OK**, forgotten with **Cancel**): 24-bit at 48 kHz by default; 16-bit (with dither), 24-bit or 32-bit float, 44.1 or 48 kHz.
 - It needs an instrument plugin to make the sound ([oxiguitar-midi](https://github.com/mateusrdp/oxiguitar-midi)) and a format plugin to open the score ([oxiguitar-guitarpro](https://github.com/mateusrdp/oxiguitar-guitarpro)). `oxiguitar-cli export SONG.gp5 SONG.wav` does the same from the command line.
 - The manual's [Exporting audio](https://mateusrdp.github.io/oxiguitar/audio-export.html) page says what goes in; the plugin guide's [Exporters](https://mateusrdp.github.io/oxiguitar/plugin-guide/exporters.html) page is how an exporter plugin works.
 

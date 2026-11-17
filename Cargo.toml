@@ -21,9 +21,11 @@ oxp = []
 
 [dependencies]
 # The SDK, from OxiGuitar's repository at the tag of the release this is
-# built for: v0.11.0 has interface 1.4, frozen. Nothing of OxiGuitar's is on
+# built for. Interface 1.9 (the dialog's tool, which doesn't edit the
+# score) is on OxiGuitar's develop until its release is tagged: until then,
+# the commit of mateusrdp/oxiguitar#306. Nothing of OxiGuitar's is on
 # crates.io.
-oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.11.0" }
+oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", rev = "f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a" }
 
 # Plugins deny `unsafe` rather than forbid it: `export_plugin!` allows it on
 # the two attributes it generates, and nowhere else.
@@ -41,7 +43,7 @@ todo = "warn"
 [dev-dependencies]
 # The contract suite (tests/contract.rs) builds the .oxp file and checks it
 # through OxiGuitar's own plugin host.
-oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.11.0" }
+oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", rev = "f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a" }
 
 [profile.release]
 # Small files. Keep the default `panic = "unwind"`: a panic is then caught
