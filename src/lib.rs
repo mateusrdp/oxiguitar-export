@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Mateus Rocha de Paula and the OxiGuitar contributors
 
-//! OxiGuitar's WAV plugin (plugin interface 1.4; M4 slice 7, PLAY-7):
+//! OxiGuitar's WAV plugin (plugin interface 1.9; M4 slice 7, PLAY-7):
 //! File → Export → WAV Audio. OxiGuitar renders the score and hands the
 //! sound over in pieces; this plugin writes it as a WAV file's bytes,
 //! which OxiGuitar writes to the file.
 //!
-//! - Its settings window picks the bit depth, 16 or 24 bits or 32-bit
-//!   float, and the rate, 44.1 or 48 kHz (Mateus, 1 Nov 2026); 24 bits at
-//!   48 kHz until the user picks.
+//! - Its dialog, Plugins → WAV Export Settings…, picks the bit depth, 16 or
+//!   24 bits or 32-bit float, and the rate, 44.1 or 48 kHz (Mateus, 1 Nov
+//!   2026); 24 bits at 48 kHz until the user picks. OK keeps the picks,
+//!   Cancel forgets them. It was OxiGuitar's settings window until the core
+//!   stopped owning anything of a plugin (OxiGuitar's ADR 0012).
 //! - 16 bits get triangular dither, so quiet passages fade into noise
 //!   rather than into steps; 24 bits and float are written as they are,
 //!   clipped at full scale (float isn't clipped).
@@ -22,7 +24,7 @@ use std::sync::Mutex;
 use oxiguitar_plugin::serde_json::{Map, Value};
 use oxiguitar_plugin::{
     AudioExporter, Error, ErrorKind, ExportEnd, ExportStart, Host, Plugin, Row, Tab, TabContent,
-    TabEvent, Widget,
+    TabEvent, Tool, Widget,
 };
 
 /// The exporter's id in the manifest.
@@ -40,7 +42,7 @@ pub enum Depth {
 }
 
 impl Depth {
-    /// Every depth, in the settings window's order.
+    /// Every depth, in the dialog's order.
     pub const ALL: [Depth; 3] = [Depth::Sixteen, Depth::TwentyFour, Depth::Float];
 
     /// Bytes a sample.
@@ -240,15 +242,43 @@ impl AudioExporter for Wav {
     }
 }
 
-/// The settings window: the bit depth and the rate.
+/// The id of the dialog (a tab whose area is `dialog`) and of the tool
+/// that opens it, in the manifest.
+pub const DIALOG: &str = "export-settings";
+
+/// The dialog, Plugins → WAV Export Settings…: the bit depth and the rate.
+/// It changes a draft, which OK writes to the settings and Cancel forgets.
 #[derive(Debug)]
 pub struct Window {
     host: Host,
+    /// The settings as the dialog has them, once something was picked.
+    draft: Mutex<Option<Map<String, Value>>>,
+}
+
+impl Window {
+    /// The settings as the dialog has them: its draft, or what is saved.
+    fn current(&self) -> Map<String, Value> {
+        let draft = self.draft.lock().ok().and_then(|d| d.as_ref().cloned());
+        draft.unwrap_or_else(|| self.host.settings().unwrap_or_default())
+    }
+}
+
+/// The tool that opens the dialog: it doesn't edit the score, so it works
+/// with no score open and while the song plays (interface 1.9). Each
+/// opening starts from what is saved.
+impl Tool for Window {
+    fn run(&self) -> Result<String, Error> {
+        if let Ok(mut draft) = self.draft.lock() {
+            *draft = None;
+        }
+        self.host.open_dialog(DIALOG)?;
+        Ok(String::new())
+    }
 }
 
 impl Tab for Window {
     fn content(&self) -> TabContent {
-        let format = Format::from_settings(&self.host.settings().unwrap_or_default());
+        let format = Format::from_settings(&self.current());
         let row = |label: &str, widget: Widget| Row {
             widgets: vec![
                 Widget::Label {
@@ -307,9 +337,21 @@ impl Tab for Window {
             _ => return Err(Error::not_found(format!("no widget {widget:?}"))),
         }
         .ok_or_else(|| Error::new(ErrorKind::Failed, format!("no choice {i}")))?;
-        let mut settings = self.host.settings()?;
+        let mut settings = self.current();
         settings.insert(widget.into(), value.into());
-        self.host.set_settings(&settings)
+        if let Ok(mut draft) = self.draft.lock() {
+            *draft = Some(settings);
+        }
+        Ok(())
+    }
+
+    /// OK writes the picks, if any were made; Cancel forgets them.
+    fn closed(&self, ok: bool) -> Result<(), Error> {
+        let draft = self.draft.lock().ok().and_then(|mut d| d.take());
+        match draft {
+            Some(settings) if ok => self.host.set_settings(&settings),
+            _ => Ok(()),
+        }
     }
 }
 
@@ -327,7 +369,10 @@ impl Plugin for WavPlugin {
                 host: host.clone(),
                 export: Mutex::default(),
             },
-            window: Window { host },
+            window: Window {
+                host,
+                draft: Mutex::new(None),
+            },
         })
     }
 
@@ -335,8 +380,12 @@ impl Plugin for WavPlugin {
         (id == EXPORTER).then_some(&self.wav as &dyn AudioExporter)
     }
 
-    fn settings_window(&self) -> Option<&dyn Tab> {
-        Some(&self.window)
+    fn tool(&self, id: &str) -> Option<&dyn Tool> {
+        (id == DIALOG).then_some(&self.window as &dyn Tool)
+    }
+
+    fn tab(&self, id: &str) -> Option<&dyn Tab> {
+        (id == DIALOG).then_some(&self.window as &dyn Tab)
     }
 }
 
@@ -415,6 +464,45 @@ mod tests {
             .header(0)
             .len()
         );
+    }
+
+    /// The dialog shows its picks at once and keeps them in a draft until
+    /// it closes: Cancel forgets them (a host that keeps no settings, so
+    /// what OK writes is checked through OxiGuitar's host in the contract
+    /// suite's dialog checks).
+    #[test]
+    fn the_dialog_changes_a_draft_until_it_closes() {
+        let window = Window {
+            host: Host::detached(),
+            draft: Mutex::new(None),
+        };
+        let selected = |w: &Window, id: &str| {
+            w.content()
+                .rows
+                .iter()
+                .flat_map(|r| &r.widgets)
+                .find_map(|x| match x {
+                    Widget::Choice {
+                        id: i, selected, ..
+                    } if i == id => Some(*selected),
+                    _ => None,
+                })
+                .unwrap()
+        };
+        assert_eq!(selected(&window, "depth"), 1, "24-bit by default");
+        window.on("depth", TabEvent::Chosen(0)).unwrap();
+        window.on("rate", TabEvent::Chosen(0)).unwrap();
+        assert_eq!(
+            (selected(&window, "depth"), selected(&window, "rate")),
+            (0, 0)
+        );
+        window.closed(false).unwrap();
+        assert_eq!(
+            (selected(&window, "depth"), selected(&window, "rate")),
+            (1, 1),
+            "Cancel forgot them"
+        );
+        assert!(window.on("bits", TabEvent::Chosen(0)).is_err());
     }
 
     fn wav(format: Format) -> Wav {

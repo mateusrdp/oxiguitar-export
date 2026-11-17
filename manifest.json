@@ -1,13 +1,18 @@
 {
-  "interface": "1.4",
+  "interface": "1.9",
   "id": "oxiguitar.wav",
   "name": "WAV export",
   "version": "0.1.1",
-  "description": "Exports the score's sound as a WAV file (File → Export → WAV Audio): 16- or 24-bit or 32-bit float, at 44.1 or 48 kHz, set in its settings.",
+  "description": "Exports the score's sound as a WAV file (File → Export → WAV Audio): 16- or 24-bit or 32-bit float, at 44.1 or 48 kHz, set in Plugins → WAV Export Settings….",
   "authors": ["The OxiGuitar contributors"],
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/mateusrdp/oxiguitar-wav",
-  "settings_window": true,
+  "tabs": [
+    { "id": "export-settings", "title": "WAV Export Settings", "area": "dialog" }
+  ],
+  "tools": [
+    { "id": "export-settings", "name": "WAV Export Settings…", "description": "Picks the bit depth and the rate of File → Export → WAV Audio: kept with OK, forgotten with Cancel.", "edits": false }
+  ],
   "exporters": [
     { "id": "wav", "name": "WAV Audio", "extension": "wav", "kind": "audio" }
   ]

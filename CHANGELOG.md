@@ -6,6 +6,11 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The WAV Export Settings dialog**: the bit depth and the rate are picked in the plugin's own dialog, **Plugins → WAV Export Settings…**, with **OK** and **Cancel**, where OxiGuitar's settings window (Tools → Plugins…, Settings…) used to be: OxiGuitar retired that window (mateusrdp/oxiguitar#306, the core owns nothing of a plugin). A pick is kept only when you press OK. The dialog works with or without a song open.
+- Plugin interface 1.9 (from mateusrdp/oxiguitar#306, the SDK at that commit until OxiGuitar's next release is tagged). This version needs that release; older OxiGuitar versions refuse it.
+
 ## [0.1.1] - 2026-11-16
 
 ### Added
