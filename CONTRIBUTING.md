@@ -1,4 +1,4 @@
-# Contributing to oxiguitar-wav
+# Contributing to oxiguitar-export
 
 Thank you for helping. Pull requests are welcome from anyone; the maintainer,
 Mateus Rocha de Paula ([@mateusrdp](https://github.com/mateusrdp)), reviews them.
