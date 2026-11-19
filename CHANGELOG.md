@@ -6,6 +6,10 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- The SDK comes from OxiGuitar's tag v0.21.2 (interface 1.11); 0.2.0 was built from the commit of that release's pull request, the same code.
+
 ## [0.2.0] - 2026-11-19
 
 ### Added
