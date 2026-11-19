@@ -23,7 +23,7 @@ Every [release](https://github.com/mateusrdp/oxiguitar-export/releases) holds a 
 
 ## Build and test
 
-Rust 1.99 or later from [rustup](https://rustup.rs). The plugin SDK comes from OxiGuitar's repository by git tag (a commit until the release with interface 1.11 is tagged); nothing of OxiGuitar's is on crates.io.
+Rust 1.99 or later from [rustup](https://rustup.rs). The plugin SDK comes from OxiGuitar's repository by git tag; nothing of OxiGuitar's is on crates.io.
 
 ```sh
 cargo test          # unit tests, and the contract suite on the built .oxp file
