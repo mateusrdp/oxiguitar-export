@@ -1,18 +1,18 @@
 [package]
-name = "oxiguitar-wav-plugin"
-description = "The OxiGuitar WAV plugin: File → Export → WAV Audio, the score's sound as a WAV file, 16- or 24-bit or 32-bit float, at 44.1 or 48 kHz."
+name = "oxiguitar-export-plugin"
+description = "The OxiGuitar audio export plugin: File → Export Audio…, the score's sound as a WAV, FLAC, MP3 or Opus file, each format with its own choices in the export dialog."
 version = "0.1.2"
 edition = "2024"
 # Rust from rustup, raised only when something needs it (CONTRIBUTING.md).
 rust-version = "1.99"
 license = "GPL-3.0-or-later"
 authors = ["Mateus Rocha de Paula", "The OxiGuitar contributors"]
-repository = "https://github.com/mateusrdp/oxiguitar-wav"
-homepage = "https://github.com/mateusrdp/oxiguitar-wav"
+repository = "https://github.com/mateusrdp/oxiguitar-export"
+homepage = "https://github.com/mateusrdp/oxiguitar-export"
 publish = false
 
 [lib]
-# An ordinary library for tests, and wav.oxp when built with
+# An ordinary library for tests, and export.oxp when built with
 # `--features oxp --crate-type cdylib` (build-oxp.sh).
 crate-type = ["lib"]
 
@@ -21,11 +21,20 @@ oxp = []
 
 [dependencies]
 # The SDK, from OxiGuitar's repository at the tag of the release this is
-# built for. Interface 1.9 (the dialog's tool, which doesn't edit the
-# score) is on OxiGuitar's develop until its release is tagged: until then,
-# the commit of mateusrdp/oxiguitar#306. Nothing of OxiGuitar's is on
-# crates.io.
-oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", rev = "f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a" }
+# built for. Interface 1.11 (an export's options in the export dialog) is
+# on OxiGuitar's branch until its release is tagged: until then, the commit
+# of the pull request for mateusrdp/oxiguitar#313. Nothing of OxiGuitar's
+# is on crates.io.
+oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", rev = "e5323ba1f2c08d15bf734c9636fa1ed3d95051a0" }
+
+# The encoders, all pure Rust, used as published (CREDITS in README.md).
+# FLAC: streams frame by frame, STREAMINFO written over at the end.
+rusty_flac = "0.5.1"
+# MP3: streams frame by frame, the gapless Info/Xing frame written over the
+# first one at the end.
+rusty_mp3 = "1.0.6"
+# Opus in Ogg (RFC 7845): streams packet by packet, pages included.
+opus-pure = "0.2.3"
 
 # Plugins deny `unsafe` rather than forbid it: `export_plugin!` allows it on
 # the two attributes it generates, and nowhere else.
@@ -43,7 +52,7 @@ todo = "warn"
 [dev-dependencies]
 # The contract suite (tests/contract.rs) builds the .oxp file and checks it
 # through OxiGuitar's own plugin host.
-oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", rev = "f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a" }
+oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", rev = "e5323ba1f2c08d15bf734c9636fa1ed3d95051a0" }
 
 [profile.release]
 # Small files. Keep the default `panic = "unwind"`: a panic is then caught

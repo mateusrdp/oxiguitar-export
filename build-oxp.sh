@@ -4,9 +4,9 @@
 #
 # Builds the plugin's release file for the system this runs on:
 #
-#   dist/wav-VERSION-SYSTEM-ARCH.oxp
+#   dist/export-VERSION-SYSTEM-ARCH.oxp
 #
-# such as dist/wav-0.1.0-linux-x86_64.oxp, named the way OxiGuitar's plugins
+# such as dist/export-0.2.0-linux-x86_64.oxp, named the way OxiGuitar's plugins
 # are (docs/plugins/template in github.com/mateusrdp/oxiguitar). On macOS it
 # builds both processors and joins them into one universal file (needs both
 # Rust targets: rustup target add aarch64-apple-darwin x86_64-apple-darwin).
@@ -17,8 +17,8 @@ set -euo pipefail
 
 # The plugin's file name, and the crate's library name (the package's name
 # with _ for -).
-NAME=wav
-LIBRARY=oxiguitar_wav_plugin
+NAME=export
+LIBRARY=oxiguitar_export_plugin
 
 cd "$(dirname "$0")"
 version="$(cargo pkgid)"

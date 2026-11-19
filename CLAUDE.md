@@ -1,4 +1,4 @@
-# Working on oxiguitar-wav with Claude
+# Working on oxiguitar-export with Claude
 
 This repository is part of OxiGuitar. Before anything else, every session
 reads `claude/START-HERE.md` in the OxiGuitar project on claude.ai (the

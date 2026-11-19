@@ -21,8 +21,8 @@ jobs:
   publish:
     uses: mateusrdp/oxiguitar-packages/.github/workflows/plugin-publish.yml@main
     with:
-      name: wav
+      name: export
       tag: ${{ inputs.tag }}
       # Not submitted to winget yet (no third parties for now): put the id back to turn it on.
-      # winget-id: mateusrdp.OxiGuitar.WAV
+      # winget-id: mateusrdp.OxiGuitar.Export
     secrets: inherit
