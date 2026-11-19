@@ -6,6 +6,18 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-19
+
+### Added
+
+- **FLAC, MP3 and Opus** (mateusrdp/oxiguitar#313), beside WAV, in File → Export Audio…'s Format list. FLAC: lossless, 16-bit (with dither) or 24-bit, 44.1 or 48 kHz. MP3: variable bitrate (V0, V2, V4) or constant (128 to 320 kbps), 44.1 or 48 kHz, gapless (an Info/Xing tag). Opus in Ogg (`.opus`): 96 to 256 kbps, always 48 kHz. All pure Rust: rusty_flac, rusty_mp3 and opus-pure, as published.
+
+### Changed
+
+- **Renamed: oxiguitar-wav is now oxiguitar-export** (the repository, the packages `oxiguitar-export` and the Flatpak `io.github.mateusrdp.OxiGuitar.Plugin.export`, the file `export.oxp`, the id `oxiguitar.export`). The manifest replaces `oxiguitar.wav`, so OxiGuitar uses this plugin even when the old one is still installed; remove the old package by hand.
+- **Each format's choices are in the export dialog**, under the Format list (plugin interface 1.11): kept with Export…, forgotten with Cancel. The Plugins → WAV Export Settings… entry is gone. The choices are kept per format, so a WAV depth and rate picked before are forgotten once.
+- Plugin interface 1.11 (the SDK at the commit of mateusrdp/oxiguitar#313's pull request until OxiGuitar's next release is tagged). This version needs that release; older OxiGuitar versions refuse it.
+
 ## [0.1.2] - 2026-11-17
 
 ### Changed

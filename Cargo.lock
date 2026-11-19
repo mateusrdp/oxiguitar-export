@@ -82,9 +82,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "opus-pure"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5afacd236411dddcc284983066ef66b27e306e53ce4de85cd745b3da9be8a0be"
+
+[[package]]
+name = "oxiguitar-export-plugin"
+version = "0.2.0"
+dependencies = [
+ "opus-pure",
+ "oxiguitar-plugin",
+ "oxiguitar-plugin-test",
+ "rusty_flac",
+ "rusty_mp3",
+]
+
+[[package]]
 name = "oxiguitar-host"
-version = "0.20.1"
-source = "git+https://github.com/mateusrdp/oxiguitar?rev=f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a#f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a"
+version = "0.21.2"
+source = "git+https://github.com/mateusrdp/oxiguitar?tag=v0.21.2#bf490f0ef69645f2ce4819baaf9ad0786d751bf9"
 dependencies = [
  "libc",
  "libloading",
@@ -95,8 +112,8 @@ dependencies = [
 
 [[package]]
 name = "oxiguitar-plugin"
-version = "1.9.0"
-source = "git+https://github.com/mateusrdp/oxiguitar?rev=f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a#f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a"
+version = "1.11.0"
+source = "git+https://github.com/mateusrdp/oxiguitar?tag=v0.21.2#bf490f0ef69645f2ce4819baaf9ad0786d751bf9"
 dependencies = [
  "oxiguitar-plugin-api",
  "serde_json",
@@ -104,8 +121,8 @@ dependencies = [
 
 [[package]]
 name = "oxiguitar-plugin-api"
-version = "1.9.0"
-source = "git+https://github.com/mateusrdp/oxiguitar?rev=f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a#f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a"
+version = "1.11.0"
+source = "git+https://github.com/mateusrdp/oxiguitar?tag=v0.21.2#bf490f0ef69645f2ce4819baaf9ad0786d751bf9"
 dependencies = [
  "miniz_oxide",
  "postcard",
@@ -115,19 +132,11 @@ dependencies = [
 
 [[package]]
 name = "oxiguitar-plugin-test"
-version = "1.9.0"
-source = "git+https://github.com/mateusrdp/oxiguitar?rev=f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a#f8b4518dff5cc0d845435fa0cfef0cfe2f57c02a"
+version = "1.11.0"
+source = "git+https://github.com/mateusrdp/oxiguitar?tag=v0.21.2#bf490f0ef69645f2ce4819baaf9ad0786d751bf9"
 dependencies = [
  "libc",
  "oxiguitar-host",
-]
-
-[[package]]
-name = "oxiguitar-wav-plugin"
-version = "0.1.2"
-dependencies = [
- "oxiguitar-plugin",
- "oxiguitar-plugin-test",
 ]
 
 [[package]]
@@ -159,6 +168,18 @@ checksum = "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "rusty_flac"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e51dfecb0b6c09f8c11adb98fa5dd8e589098ab80aa92a2e56e858441ed0ea6"
+
+[[package]]
+name = "rusty_mp3"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6bc564f58a4eed8f95a43dbbb69b739a7c517230b8f852d45bfcc9c8566a67a8"
 
 [[package]]
 name = "serde"

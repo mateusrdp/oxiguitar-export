@@ -10,18 +10,31 @@ use std::path::Path;
 #[test]
 fn the_plugin_file_keeps_the_contract() {
     let crate_folder = Path::new(env!("CARGO_MANIFEST_DIR"));
-    // Builds target/oxp/wav.oxp: the package's name, then the file's.
-    let oxp = oxiguitar_plugin_test::build(crate_folder, env!("CARGO_PKG_NAME"), "wav", false)
+    // Builds target/oxp/export.oxp: the package's name, then the file's.
+    let oxp = oxiguitar_plugin_test::build(crate_folder, env!("CARGO_PKG_NAME"), "export", false)
         .expect("the .oxp file builds");
     let report = oxiguitar_plugin_test::check(&oxp);
     for passed in &report.passed {
         println!("ok    {passed}");
     }
     assert!(report.ok(), "failed: {:#?}", report.failed);
-    // An exporter plugin also passes the exporter checks.
-    assert!(
-        report.passed.iter().any(|p| p.contains("exporter wav")),
-        "{:#?}",
-        report.passed
-    );
+    // Each format passes the exporter checks, and its options the tab's.
+    for id in ["wav", "flac", "mp3", "opus"] {
+        assert!(
+            report
+                .passed
+                .iter()
+                .any(|p| p.contains(&format!("exporter {id}"))),
+            "{id}: {:#?}",
+            report.passed
+        );
+        assert!(
+            report
+                .passed
+                .iter()
+                .any(|p| p.contains(&format!("tab {id}-options"))),
+            "{id}: {:#?}",
+            report.passed
+        );
+    }
 }
