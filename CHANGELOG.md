@@ -6,10 +6,6 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Changed
-
-- The SDK comes from OxiGuitar's tag v0.21.2 (interface 1.11); 0.2.0 was built from the commit of that release's pull request, the same code.
-
 ## [0.2.0] - 2026-11-19
 
 ### Added
@@ -20,7 +16,7 @@ follows [Semantic Versioning](https://semver.org/).
 
 - **Renamed: oxiguitar-wav is now oxiguitar-export** (the repository, the packages `oxiguitar-export` and the Flatpak `io.github.mateusrdp.OxiGuitar.Plugin.export`, the file `export.oxp`, the id `oxiguitar.export`). The manifest replaces `oxiguitar.wav`, so OxiGuitar uses this plugin even when the old one is still installed; remove the old package by hand.
 - **Each format's choices are in the export dialog**, under the Format list (plugin interface 1.11): kept with Export…, forgotten with Cancel. The Plugins → WAV Export Settings… entry is gone. The choices are kept per format, so a WAV depth and rate picked before are forgotten once.
-- Plugin interface 1.11 (the SDK at the commit of mateusrdp/oxiguitar#313's pull request until OxiGuitar's next release is tagged). This version needs that release; older OxiGuitar versions refuse it.
+- Plugin interface 1.11 (the SDK at OxiGuitar's tag v0.21.2). This version needs that release; older OxiGuitar versions refuse it.
 
 ## [0.1.2] - 2026-11-17
 
