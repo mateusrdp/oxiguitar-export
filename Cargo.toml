@@ -1,7 +1,7 @@
 [package]
 name = "oxiguitar-export-plugin"
 description = "The OxiGuitar audio export plugin: File → Export Audio…, the score's sound as a WAV, FLAC, MP3 or Opus file, each format with its own choices in the export dialog."
-version = "0.1.2"
+version = "0.2.0"
 edition = "2024"
 # Rust from rustup, raised only when something needs it (CONTRIBUTING.md).
 rust-version = "1.99"

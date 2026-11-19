@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-19
+
 ### Added
 
 - **FLAC, MP3 and Opus** (mateusrdp/oxiguitar#313), beside WAV, in File → Export Audio…'s Format list. FLAC: lossless, 16-bit (with dither) or 24-bit, 44.1 or 48 kHz. MP3: variable bitrate (V0, V2, V4) or constant (128 to 320 kbps), 44.1 or 48 kHz, gapless (an Info/Xing tag). Opus in Ogg (`.opus`): 96 to 256 kbps, always 48 kHz. All pure Rust: rusty_flac, rusty_mp3 and opus-pure, as published.
