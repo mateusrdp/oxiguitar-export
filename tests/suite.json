@@ -1,0 +1,6 @@
+{
+  "repository": "mateusrdp/oxiguitar-export",
+  "plugins": [
+    {"name": "export", "package": "oxiguitar-export-plugin", "library": "oxiguitar_export_plugin"}
+  ]
+}
