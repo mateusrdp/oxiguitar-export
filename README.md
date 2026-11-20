@@ -14,16 +14,19 @@ The audio export plugin for [OxiGuitar](https://github.com/mateusrdp/oxiguitar),
 
 <img src="docs/export-dialog.png" alt="File, Export Audio: the Format list on MP3, with its Quality and Rate under it" width="380">
 
-- It needs an instrument plugin to make the sound ([oxiguitar-midi](https://github.com/mateusrdp/oxiguitar-midi)) and a format plugin to open the score ([oxiguitar-guitarpro](https://github.com/mateusrdp/oxiguitar-guitarpro)). `oxiguitar-cli export SONG.gp5 SONG.flac` does the same from the command line, with the choices last kept.
-- The manual's [Exporting audio](https://mateusrdp.github.io/oxiguitar/audio-export.html) page says what goes in; the plugin guide's [Exporters](https://mateusrdp.github.io/oxiguitar/plugin-guide/exporters.html) page is how an exporter plugin works.
+- It needs an instrument plugin to make the sound (the [MIDI plugin](https://mateusrdp.github.io/oxiguitar-midi/)) and a format plugin to open the score, such as the Guitar Pro plugins. `oxiguitar-cli export SONG.gp5 SONG.flac` does the same from the command line, with the choices last kept.
+
+## Manual
+
+The manual is at <https://mateusrdp.github.io/oxiguitar-export/>. Its source is in [docs/manual](docs/manual). It covers what the plugin is for, how it works, what it needs and how to install it.
 
 ## Install
 
-Every [release](https://github.com/mateusrdp/oxiguitar-export/releases) holds a zip per system (Linux x86_64 and ARM64, Windows x86_64 and ARM64, macOS), a `.deb` and an `.rpm` for Linux, a per-user Windows installer (no administrator needed), a macOS `.pkg`, and a `SHA256SUMS` file. The OxiGuitar manual's [install page](https://mateusrdp.github.io/oxiguitar/installing.html) says which one to use and how to keep the plugin updated through your package manager. The plugin needs OxiGuitar with plugin interface 1.11 (the release after 0.21.1).
+Every [release](https://github.com/mateusrdp/oxiguitar-export/releases) holds a zip per system (Linux x86_64 and ARM64, Windows x86_64 and ARM64, macOS), a `.deb` and an `.rpm` for Linux, a per-user Windows installer (no administrator needed), a macOS `.pkg`, and a `SHA256SUMS` file. The [manual's install page](https://mateusrdp.github.io/oxiguitar-export/install.html) says which one to use and how to keep it updated. The plugin needs OxiGuitar with plugin interface 1.11 (the release after 0.21.1).
 
 ## Build and test
 
-Rust 1.99 or later from [rustup](https://rustup.rs). The plugin SDK comes from OxiGuitar's repository by git tag (a commit until the release with interface 1.11 is tagged); nothing of OxiGuitar's is on crates.io.
+Rust 1.99 or later from [rustup](https://rustup.rs). The plugin SDK comes from OxiGuitar's repository by git tag; nothing of OxiGuitar's is on crates.io.
 
 ```sh
 cargo test          # unit tests, and the contract suite on the built .oxp file
@@ -42,7 +45,7 @@ The encoders are pure Rust, used as published:
 
 ## History
 
-This plugin lived in the [OxiGuitar repository](https://github.com/mateusrdp/oxiguitar) until its version 0.11.0. Its history came along; an issue number such as `mateusrdp/oxiguitar#123` in an old commit message is in that repository.
+This plugin lived in the OxiGuitar repository until its version 0.11.0. Its history came along; an issue number such as `mateusrdp/oxiguitar#123` in an old commit message is in that repository.
 
 ## Licence
 
