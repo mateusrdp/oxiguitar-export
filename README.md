@@ -2,6 +2,8 @@
 
 The audio export plugin for [OxiGuitar](https://github.com/mateusrdp/oxiguitar), a free, open-source guitar tablature and score viewer, editor and player for Windows, macOS and Linux. It adds the formats of **File → Export Audio…**: OxiGuitar plays the whole song, or the selected bars, through its instruments, amps and mixer faster than real time, as written or at your practice speed, and this plugin writes the sound as a **WAV**, **FLAC**, **MP3** or **Opus** file.
 
+In plain words: this plugin saves a song as an audio file, with every instrument, amp and mixer setting you hear in OxiGuitar. WAV and FLAC keep every detail (FLAC at about half the size); MP3 and Opus are small files for sharing. The [manual](https://mateusrdp.github.io/oxiguitar-export/) explains sample rates, bit depth, dither and lossy formats.
+
 - Plugin file `export.oxp`, id `oxiguitar.export`. Until 0.1.2 it was the WAV plugin (`oxiguitar-wav`, `wav.oxp`, id `oxiguitar.wav`); it replaces that id, so OxiGuitar uses this one even when the old file is still installed. You can remove the old package (`oxiguitar-wav`, or the Flatpak `io.github.mateusrdp.OxiGuitar.Plugin.wav`).
 - Each format's choices show in the export dialog under its **Format** list, kept with **Export…** and forgotten with **Cancel**:
 
@@ -43,6 +45,8 @@ The encoders are pure Rust, used as published:
 | [rusty_flac](https://github.com/Remade-With-Rust/rusty_flac) | Mata Network (Remade With Rust) | Apache-2.0 | FLAC |
 | [rusty_mp3](https://github.com/Remade-With-Rust/remade_ffmpeg_rs) | Mata Network (Remade With Rust) | Apache-2.0 | MP3 |
 | [opus-pure](https://github.com/stephenberry/opus-pure) | Stephen Berry and restsend.com; a port of libopus (Xiph.Org, Skype Limited, Octasic and others) | BSD-3-Clause | Opus and its Ogg pages |
+
+The manual's [Credits](https://mateusrdp.github.io/oxiguitar-export/credits.html) page lists everything this plugin uses, with authors and licences. Thank you to all of them.
 
 ## History
 
