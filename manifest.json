@@ -1,5 +1,5 @@
 {
-  "interface": "1.11",
+  "interface": "1.16",
   "id": "oxiguitar.export",
   "name": "Audio export",
   "version": "0.3.0",
@@ -8,16 +8,17 @@
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/mateusrdp/oxiguitar-export",
   "replaces": ["oxiguitar.wav"],
-  "tabs": [
-    { "id": "wav-options", "title": "WAV", "area": "dialog" },
-    { "id": "flac-options", "title": "FLAC", "area": "dialog" },
-    { "id": "mp3-options", "title": "MP3", "area": "dialog" },
-    { "id": "opus-options", "title": "Opus", "area": "dialog" }
-  ],
   "exporters": [
     { "id": "wav", "name": "WAV Audio", "extension": "wav", "kind": "audio", "options": "wav-options" },
     { "id": "flac", "name": "FLAC Audio", "extension": "flac", "kind": "audio", "options": "flac-options" },
     { "id": "mp3", "name": "MP3 Audio", "extension": "mp3", "kind": "audio", "options": "mp3-options" },
     { "id": "opus", "name": "Opus Audio", "extension": "opus", "kind": "audio", "options": "opus-options" }
+  ],
+  "ui": "ui/export.slint",
+  "views": [
+    { "id": "wav-options", "component": "FormatOptions", "place": "export" },
+    { "id": "flac-options", "component": "FormatOptions", "place": "export" },
+    { "id": "mp3-options", "component": "FormatOptions", "place": "export" },
+    { "id": "opus-options", "component": "FormatOptions", "place": "export" }
   ]
 }

@@ -18,7 +18,7 @@ fn the_plugin_file_keeps_the_contract() {
         println!("ok    {passed}");
     }
     assert!(report.ok(), "failed: {:#?}", report.failed);
-    // Each format passes the exporter checks, and its options the tab's.
+    // Each format passes the exporter checks, and its options the view's.
     for id in ["wav", "flac", "mp3", "opus"] {
         assert!(
             report
@@ -32,7 +32,7 @@ fn the_plugin_file_keeps_the_contract() {
             report
                 .passed
                 .iter()
-                .any(|p| p.contains(&format!("tab {id}-options"))),
+                .any(|p| p.contains(&format!("view {id}-options: showing and closing"))),
             "{id}: {:#?}",
             report.passed
         );
