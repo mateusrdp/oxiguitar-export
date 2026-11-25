@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Mateus Rocha de Paula and the OxiGuitar contributors
+
+// A format's options in File -> Export Audio... (plugin interface 1.16):
+// a choice per option, then a note on the format. One component for the
+// four formats; the plugin sets every property (src/lib.rs, Options) and
+// hears each pick.
+
+import { ComboBox } from "std-widgets.slint";
+
+export struct Field {
+    label: string,
+    options: [string],
+    picked: int,
+}
+
+export component FormatOptions {
+    in property <[Field]> fields;
+    in property <string> note;
+    callback chosen(int, int);
+
+    VerticalLayout {
+        spacing: 6px;
+        for field[i] in root.fields: HorizontalLayout {
+            spacing: 8px;
+            Text {
+                text: field.label;
+                min-width: 80px;
+                vertical-alignment: center;
+            }
+            ComboBox {
+                model: field.options;
+                current-index: field.picked;
+                selected => { root.chosen(i, self.current-index); }
+            }
+        }
+        Text {
+            text: root.note;
+            wrap: word-wrap;
+            opacity: 0.7;
+        }
+    }
+}

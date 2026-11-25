@@ -24,7 +24,7 @@ The manual is at <https://mateusrdp.github.io/oxiguitar-export/>. Its source is 
 
 ## Install
 
-Every [release](https://github.com/mateusrdp/oxiguitar-export/releases) holds a zip per system (Linux x86_64 and ARM64, Windows x86_64 and ARM64, macOS), a `.deb` and an `.rpm` for Linux, a per-user Windows installer (no administrator needed), a macOS `.pkg`, and a `SHA256SUMS` file. The [manual's install page](https://mateusrdp.github.io/oxiguitar-export/install.html) says which one to use and how to keep it updated. The plugin needs OxiGuitar with plugin interface 1.11 (the release after 0.21.1).
+Every [release](https://github.com/mateusrdp/oxiguitar-export/releases) holds a zip per system (Linux x86_64 and ARM64, Windows x86_64 and ARM64, macOS), a `.deb` and an `.rpm` for Linux, a per-user Windows installer (no administrator needed), a macOS `.pkg`, and a `SHA256SUMS` file. The [manual's install page](https://mateusrdp.github.io/oxiguitar-export/install.html) says which one to use and how to keep it updated. The plugin needs OxiGuitar 0.23.0 or later (plugin interface 1.16); its 0.2 releases work with 0.21.2 and later.
 
 ## Build and test
 
