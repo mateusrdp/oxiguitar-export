@@ -528,7 +528,7 @@ checksum = "5afacd236411dddcc284983066ef66b27e306e53ce4de85cd745b3da9be8a0be"
 
 [[package]]
 name = "oxiguitar-export-plugin"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "opus-pure",
  "oxiguitar-plugin",
