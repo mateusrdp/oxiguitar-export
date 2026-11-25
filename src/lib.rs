@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Mateus Rocha de Paula and the OxiGuitar contributors
 
-//! OxiGuitar's audio export plugin (plugin interface 1.11; M4 slice 7,
+//! OxiGuitar's audio export plugin (plugin interface 1.16; M4 slice 7,
 //! PLAY-7; mateusrdp/oxiguitar#313): the formats of File → Export Audio….
 //! OxiGuitar renders the score and hands the sound over in pieces; this
 //! plugin encodes it, and OxiGuitar writes the bytes to the file.
 //!
 //! - Four formats, each an exporter: WAV ([`wav`]), FLAC ([`flac`]), MP3
 //!   ([`mp3`]) and Opus in Ogg ([`opus`]), every encoder pure Rust.
-//! - Each format's choices are a dialog of its own ([`Options`]), which
-//!   the export dialog shows under its list of formats while the format is
-//!   picked (the exporter's `options`, interface 1.11). It changes a draft:
-//!   OK on the export dialog keeps the picks in the plugin's settings
-//!   before the export starts, Cancel forgets them ([`choices`]).
+//! - Each format's choices are a view of its own ([`Options`],
+//!   `ui/export.slint`), which the export dialog shows under its list of
+//!   formats while the format is picked (the exporter's `options`). It
+//!   changes a draft: OK on the export dialog keeps the picks in the
+//!   plugin's settings before the export starts, Cancel forgets them
+//!   ([`choices`]).
 //! - It was the WAV plugin (`oxiguitar.wav`) until 0.1.2: its manifest
 //!   `replaces` that id, so a leftover `wav.oxp` counts as an older
 //!   version of this one.
@@ -21,8 +22,8 @@ use std::sync::Mutex;
 
 use oxiguitar_plugin::serde_json::{Map, Value};
 use oxiguitar_plugin::{
-    AudioExporter, Error, ErrorKind, ExportEnd, ExportStart, Host, Plugin, Row, Tab, TabContent,
-    TabEvent, Widget,
+    AudioExporter, Error, ErrorKind, ExportEnd, ExportStart, Host, Plugin, TrackView, Ui,
+    Value as View,
 };
 
 pub mod choices;
@@ -138,9 +139,9 @@ impl AudioExporter for Exporter {
     }
 }
 
-/// A format's options: the dialog the export dialog shows under its list
-/// of formats. It changes a draft of the plugin's settings, which OK
-/// writes and Cancel forgets.
+/// A format's options: the view the export dialog shows under its list of
+/// formats. It changes a draft of the plugin's settings, which OK writes
+/// and Cancel forgets.
 #[derive(Debug)]
 pub struct Options {
     kind: Kind,
@@ -155,53 +156,50 @@ impl Options {
         let draft = self.draft.lock().ok().and_then(|d| d.as_ref().cloned());
         draft.unwrap_or_else(|| self.host.settings().unwrap_or_default())
     }
-}
 
-impl Tab for Options {
-    fn content(&self) -> TabContent {
+    /// The view's properties: a choice per option, then the note.
+    pub fn properties(&self) -> Vec<(String, View)> {
         let object = choices::object(&self.current(), self.kind);
-        let mut rows: Vec<Row> = self
+        let fields = self
             .kind
             .fields()
             .iter()
-            .map(|f| Row {
-                widgets: vec![
-                    Widget::Label {
-                        text: f.label.into(),
-                        muted: false,
-                    },
-                    Widget::Choice {
-                        id: f.key.into(),
-                        options: f.options.iter().map(|(_, t)| (*t).to_owned()).collect(),
-                        selected: choices::picked(&object, f) as u32,
-                        enabled: true,
-                    },
-                ],
+            .map(|f| {
+                View::Struct(vec![
+                    ("label".into(), View::String(f.label.into())),
+                    (
+                        "options".into(),
+                        View::List(
+                            f.options
+                                .iter()
+                                .map(|(_, t)| View::String((*t).into()))
+                                .collect(),
+                        ),
+                    ),
+                    (
+                        "picked".into(),
+                        View::Number(choices::picked(&object, f) as f64),
+                    ),
+                ])
             })
             .collect();
-        rows.push(Row {
-            widgets: vec![Widget::Label {
-                text: self.kind.note().into(),
-                muted: true,
-            }],
-        });
-        TabContent { rows }
+        vec![
+            ("fields".into(), View::List(fields)),
+            ("note".into(), View::String(self.kind.note().into())),
+        ]
     }
 
-    fn on(&self, widget: &str, event: TabEvent) -> Result<(), Error> {
-        let TabEvent::Chosen(i) = event else {
-            return Ok(());
-        };
+    /// The user picked the option `option` of the field `field`.
+    pub fn choose(&self, field: usize, option: usize) -> Result<(), Error> {
         let field = self
             .kind
             .fields()
-            .iter()
-            .find(|f| f.key == widget)
-            .ok_or_else(|| Error::not_found(format!("no widget {widget:?}")))?;
+            .get(field)
+            .ok_or_else(|| Error::not_found(format!("no field {field}")))?;
         let (key, _) = field
             .options
-            .get(i as usize)
-            .ok_or_else(|| Error::new(ErrorKind::Failed, format!("no choice {i}")))?;
+            .get(option)
+            .ok_or_else(|| Error::new(ErrorKind::Failed, format!("no choice {option}")))?;
         let mut settings = self.current();
         let mut object = choices::object(&settings, self.kind);
         object.insert(field.key.into(), (*key).into());
@@ -213,12 +211,20 @@ impl Tab for Options {
     }
 
     /// OK writes the picks, if any were made; Cancel forgets them.
-    fn closed(&self, ok: bool) -> Result<(), Error> {
+    pub fn closed(&self, ok: bool) -> Result<(), Error> {
         let draft = self.draft.lock().ok().and_then(|mut d| d.take());
         match draft {
             Some(settings) if ok => self.host.set_settings(&settings),
             _ => Ok(()),
         }
+    }
+}
+
+/// A callback's argument `i`, a whole number from 0.
+fn index(args: &[View], i: usize) -> Option<usize> {
+    match args.get(i) {
+        Some(View::Number(n)) if *n >= 0.0 && n.fract() == 0.0 => Some(*n as usize),
+        _ => None,
     }
 }
 
@@ -259,12 +265,47 @@ impl Plugin for ExportPlugin {
             .map(|e| e as &dyn AudioExporter)
     }
 
-    fn tab(&self, id: &str) -> Option<&dyn Tab> {
-        let kind = Kind::ALL.into_iter().find(|k| k.options() == id)?;
-        self.options
-            .iter()
-            .find(|o| o.kind == kind)
-            .map(|o| o as &dyn Tab)
+    fn ui(&self) -> Option<&dyn Ui> {
+        Some(self)
+    }
+}
+
+impl ExportPlugin {
+    /// The options of the format whose options' view is `view`.
+    fn options_of(&self, view: &str) -> Option<&Options> {
+        let kind = Kind::ALL.into_iter().find(|k| k.options() == view)?;
+        self.options.iter().find(|o| o.kind == kind)
+    }
+}
+
+/// The four formats' options, as views of `ui/export.slint`.
+impl Ui for ExportPlugin {
+    fn shown(&self, view: &str, _track: Option<&TrackView>) -> Result<(), Error> {
+        match self.options_of(view) {
+            Some(o) => o.host.set_view(view, o.properties()),
+            None => Ok(()),
+        }
+    }
+
+    fn callback(&self, view: &str, callback: &str, args: Vec<View>) -> Result<(), Error> {
+        let Some(o) = self.options_of(view) else {
+            return Ok(());
+        };
+        if callback != "chosen" {
+            return Ok(());
+        }
+        let (Some(field), Some(option)) = (index(&args, 0), index(&args, 1)) else {
+            return Ok(());
+        };
+        o.choose(field, option)?;
+        o.host.set_view(view, o.properties())
+    }
+
+    fn closed(&self, view: &str, accepted: bool) -> Result<(), Error> {
+        match self.options_of(view) {
+            Some(o) => o.closed(accepted),
+            None => Ok(()),
+        }
     }
 }
 
@@ -282,18 +323,23 @@ mod tests {
         }
     }
 
-    fn selected(o: &Options, id: &str) -> u32 {
-        o.content()
-            .rows
-            .iter()
-            .flat_map(|r| &r.widgets)
-            .find_map(|x| match x {
-                Widget::Choice {
-                    id: i, selected, ..
-                } if i == id => Some(*selected),
-                _ => None,
-            })
-            .unwrap()
+    fn selected(o: &Options, key: &str) -> u32 {
+        let field = o.kind.fields().iter().position(|f| f.key == key).unwrap();
+        let p = o.properties();
+        let View::List(fields) = &p[0].1 else {
+            panic!()
+        };
+        let View::Struct(f) = &fields[field] else {
+            panic!()
+        };
+        match f.iter().find(|(n, _)| n == "picked") {
+            Some((_, View::Number(n))) => *n as u32,
+            other => panic!("{other:?}"),
+        }
+    }
+
+    fn field(kind: Kind, key: &str) -> usize {
+        kind.fields().iter().position(|f| f.key == key).unwrap()
     }
 
     /// The options show their picks at once and keep them in a draft
@@ -304,8 +350,8 @@ mod tests {
     fn the_options_change_a_draft_until_they_close() {
         let wav = options(Kind::Wav);
         assert_eq!(selected(&wav, "depth"), 1, "24-bit by default");
-        wav.on("depth", TabEvent::Chosen(0)).unwrap();
-        wav.on("rate", TabEvent::Chosen(0)).unwrap();
+        wav.choose(field(Kind::Wav, "depth"), 0).unwrap();
+        wav.choose(field(Kind::Wav, "rate"), 0).unwrap();
         assert_eq!((selected(&wav, "depth"), selected(&wav, "rate")), (0, 0));
         let draft = wav.current();
         assert_eq!(
@@ -314,8 +360,8 @@ mod tests {
         );
         wav.closed(false).unwrap();
         assert_eq!((selected(&wav, "depth"), selected(&wav, "rate")), (1, 1));
-        assert!(wav.on("bits", TabEvent::Chosen(0)).is_err());
-        assert!(wav.on("depth", TabEvent::Chosen(9)).is_err());
+        assert!(wav.choose(9, 0).is_err());
+        assert!(wav.choose(field(Kind::Wav, "depth"), 9).is_err());
         assert_eq!(selected(&options(Kind::Mp3), "quality"), 1, "V2");
         assert_eq!(selected(&options(Kind::Opus), "bitrate"), 2, "160 kbps");
     }
@@ -325,10 +371,27 @@ mod tests {
         let plugin = ExportPlugin::start(Host::detached()).unwrap();
         for kind in Kind::ALL {
             assert!(plugin.audio_exporter(kind.id()).is_some());
-            assert!(plugin.tab(kind.options()).is_some());
+            assert!(plugin.options_of(kind.options()).is_some());
         }
         assert!(plugin.audio_exporter("ogg").is_none());
-        assert!(plugin.tab("wav").is_none());
+        assert!(plugin.options_of("wav").is_none());
+    }
+
+    /// The file compiles as OxiGuitar compiles it, with every property and
+    /// callback the options use.
+    #[test]
+    fn the_slint_file_has_what_the_options_set_and_hear() {
+        let file = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("ui/export.slint");
+        let compiled = oxiguitar_plugin_test::compile_ui_file(&file).unwrap();
+        let c = compiled
+            .components
+            .iter()
+            .find(|c| c.name == "FormatOptions")
+            .unwrap();
+        for (name, _) in options(Kind::Flac).properties() {
+            assert!(c.properties.contains(&name), "{name}");
+        }
+        assert!(c.callbacks.iter().any(|p| p == "chosen"));
     }
 
     #[test]

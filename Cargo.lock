@@ -528,7 +528,7 @@ checksum = "5afacd236411dddcc284983066ef66b27e306e53ce4de85cd745b3da9be8a0be"
 
 [[package]]
 name = "oxiguitar-export-plugin"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "opus-pure",
  "oxiguitar-plugin",
@@ -694,9 +694,9 @@ checksum = "0e51dfecb0b6c09f8c11adb98fa5dd8e589098ab80aa92a2e56e858441ed0ea6"
 
 [[package]]
 name = "rusty_mp3"
-version = "1.0.6"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6bc564f58a4eed8f95a43dbbb69b739a7c517230b8f852d45bfcc9c8566a67a8"
+checksum = "3e2d59abff1864e5486cd9121d542b0365af0c8d8f469b03c480a699a477b1ec"
 
 [[package]]
 name = "semver"

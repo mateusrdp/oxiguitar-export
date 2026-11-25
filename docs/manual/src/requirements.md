@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- OxiGuitar 0.21.2 or later (plugin interface 1.11). See [the OxiGuitar manual](https://mateusrdp.github.io/oxiguitar/).
+- OxiGuitar 0.23 or later (plugin interface 1.16). Version 0.2 of the plugin works with OxiGuitar 0.21.2 and later. See [the OxiGuitar manual](https://mateusrdp.github.io/oxiguitar/).
 - The MIDI plugin, for the sound. See [its manual](https://mateusrdp.github.io/oxiguitar-midi/).
 - Windows, macOS or Linux.
 

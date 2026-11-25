@@ -6,6 +6,12 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-25
+
+### Changed
+
+- **Each format's options are drawn in Slint** (mateusrdp/oxiguitar#346, plugin interface 1.16): `ui/export.slint`, packed in the plugin file, one component that the export dialog shows for the format picked, with OxiGuitar's own widgets, fonts and colours. Same choices as before, still a draft until Export. The plugin needs OxiGuitar 0.23.0 or later (it already did, since its plugin file is an archive); the README and the manual now say so.
+
 ## [0.3.0] - 2026-11-25
 
 ### Changed
