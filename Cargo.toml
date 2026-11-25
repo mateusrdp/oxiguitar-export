@@ -23,7 +23,9 @@ oxp = []
 # The SDK, from OxiGuitar's repository at the tag of the release this is
 # built for (0.21.2: interface 1.11, an export's options in the export
 # dialog). Nothing of OxiGuitar's is on crates.io.
-oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.21.2" }
+# Now at v0.23.0 (plugin interface 1.16; plugin files are tar archives,
+# mateusrdp/oxiguitar#347).
+oxiguitar-plugin = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.23.0" }
 
 # The encoders, all pure Rust, used as published (CREDITS in README.md).
 # FLAC: streams frame by frame, STREAMINFO written over at the end.
@@ -50,7 +52,7 @@ todo = "warn"
 [dev-dependencies]
 # The contract suite (tests/contract.rs) builds the .oxp file and checks it
 # through OxiGuitar's own plugin host.
-oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.21.2" }
+oxiguitar-plugin-test = { git = "https://github.com/mateusrdp/oxiguitar", tag = "v0.23.0" }
 
 [profile.release]
 # Small files. Keep the default `panic = "unwind"`: a panic is then caught
