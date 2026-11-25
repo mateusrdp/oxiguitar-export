@@ -389,7 +389,7 @@ mod tests {
             .find(|c| c.name == "FormatOptions")
             .unwrap();
         for (name, _) in options(Kind::Flac).properties() {
-            assert!(c.properties.iter().any(|p| *p == name), "{name}");
+            assert!(c.properties.contains(&name), "{name}");
         }
         assert!(c.callbacks.iter().any(|p| p == "chosen"));
     }
