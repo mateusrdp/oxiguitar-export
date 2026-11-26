@@ -1,487 +1,744 @@
 {
   "version": "1.0.0",
   "project": {
-    "name": "oxiguitar-wav-plugin",
+    "name": "oxiguitar-wav",
+    "description": "oxiguitar-wav plugin for OxiGuitar",
     "languages": [
+      "json",
       "rust",
-      "yaml",
-      "markdown",
-      "toml",
-      "shell",
-      "json"
+      "slint",
+      "toml"
     ],
     "frameworks": [
-      "oxiguitar-plugin"
+      "Slint"
     ],
-    "description": "The OxiGuitar WAV export plugin: File → Export → WAV Audio. Converts guitar tablature score audio into WAV files at 16-bit, 24-bit, or 32-bit float, at 44.1 or 48 kHz.",
-    "analyzedAt": "2026-11-07T20:49:24.542Z",
-    "gitCommitHash": "53f3264b38906d98c3b737a0f4c320b46323550a"
+    "analyzedAt": "2026-11-26T22:00:00.000Z",
+    "analyzedCommit": "ccd43e3d05ff45ea6b6dce9a3ef4579d4bee4309"
   },
   "nodes": [
     {
       "id": "file:.github/workflows/ci.yml",
       "type": "pipeline",
-      "name": "CI Pipeline",
-      "filePath": ".github/workflows/ci.yml",
-      "summary": "Main CI workflow: formatting, linting, testing on 6 platforms (Linux x86_64/ARM64, Windows x86_64/ARM64, macOS), license/advisory checks via cargo-deny, DCO sign-off verification, and a ci-success gate job.",
+      "name": "CI",
+      "summary": "Build and test",
       "tags": [
-        "ci",
-        "github-actions",
-        "testing",
-        "linting"
+        "ci"
       ],
-      "complexity": "moderate"
+      "complexity": "simple",
+      "filePath": ".github/workflows/ci.yml"
     },
     {
-      "id": "file:.github/workflows/release.yml",
+      "id": "file:.github/workflows/docs.yml",
       "type": "pipeline",
-      "name": "Release Pipeline",
-      "filePath": ".github/workflows/release.yml",
-      "summary": "Reusable workflow for building and packaging the .oxp plugin file for each target system (Linux, Windows, macOS, x86_64 and ARM64). On PRs produces test builds; on v* tags creates draft releases.",
+      "name": "Docs",
+      "summary": "Documentation build",
       "tags": [
-        "release",
-        "github-actions",
-        "packaging"
+        "ci"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": ".github/workflows/docs.yml"
     },
     {
       "id": "file:.github/workflows/publish.yml",
       "type": "pipeline",
-      "name": "Publish Pipeline",
-      "filePath": ".github/workflows/publish.yml",
-      "summary": "Triggers on release published to notify package repositories and winget. Uses a reusable workflow from oxiguitar-packages with required secrets.",
+      "name": "Publish",
+      "summary": "Publish artifacts",
       "tags": [
-        "publish",
-        "github-actions",
-        "distribution"
+        "ci"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": ".github/workflows/publish.yml"
     },
     {
-      "id": "document:CHANGELOG.md",
-      "type": "document",
-      "name": "Changelog",
-      "filePath": "CHANGELOG.md",
-      "summary": "Project changelog following Keep a Changelog format with Semantic Versioning. Documents the first release (0.1.0) and the plugin's move to its own repository.",
+      "id": "file:.github/workflows/release.yml",
+      "type": "pipeline",
+      "name": "Release",
+      "summary": "Create releases",
       "tags": [
-        "documentation",
-        "changelog"
+        "ci"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": ".github/workflows/release.yml"
     },
     {
-      "id": "document:CLAUDE.md",
-      "type": "document",
-      "name": "Claude Working Guide",
-      "filePath": "CLAUDE.md",
-      "summary": "Standing rules for AI-assisted development: no forks, no telemetry, DCO sign-off, branch model (develop/main), git workflow conventions, and repository-specific policies.",
-      "tags": [
-        "documentation",
-        "conventions",
-        "ai-guidelines"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "document:CONTRIBUTING.md",
-      "type": "document",
-      "name": "Contributing Guide",
-      "filePath": "CONTRIBUTING.md",
-      "summary": "Contribution guidelines covering branch model (develop as default), squash-merge workflow, and DCO sign-off process. Links to the main OxiGuitar contributing guide.",
-      "tags": [
-        "documentation",
-        "contributing",
-        "dco"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:Cargo.toml",
-      "type": "config",
-      "name": "Cargo Manifest",
-      "filePath": "Cargo.toml",
-      "summary": "Rust package manifest for oxiguitar-wav-plugin v0.1.0. Dependencies: oxiguitar-plugin (git tag v0.11.0), oxiguitar-plugin-test (dev). Features: oxp. Lints: deny unsafe, warn on clippy/doc warnings. Release profile: thin LTO, single codegen unit, strip symbols.",
-      "tags": [
-        "rust",
-        "configuration",
-        "dependencies"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "document:README.md",
+      "id": "file:README.md",
       "type": "document",
       "name": "README",
-      "filePath": "README.md",
-      "summary": "Project overview: WAV export plugin for OxiGuitar guitar tablature software. Covers features (16/24/32-bit float, 44.1/48 kHz), installation, build instructions, history, and license (GPL-3.0-or-later).",
+      "summary": "wav plugin overview",
       "tags": [
-        "documentation",
-        "overview"
+        "docs"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": "README.md"
     },
     {
-      "id": "script:build-oxp.sh",
-      "type": "script",
-      "name": "Build Script",
-      "filePath": "build-oxp.sh",
-      "summary": "Shell script that builds the .oxp plugin file for the current host system. Handles macOS universal binaries (lipo), Windows DLL, and Linux shared library output to dist/.",
-      "tags": [
-        "build",
-        "shell",
-        "packaging"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:clippy.toml",
-      "type": "config",
-      "name": "Clippy Configuration",
-      "filePath": "clippy.toml",
-      "summary": "Clippy lint configuration: MSRV 1.99, allows unwrap/expect/panic/indexing in test code.",
-      "tags": [
-        "rust",
-        "clippy",
-        "configuration"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:deny.toml",
-      "type": "config",
-      "name": "Cargo Deny Configuration",
-      "filePath": "deny.toml",
-      "summary": "Dependency license and security policy: allows GPL, MIT, Apache, BSD, ISC, Zlib, and other GPL-compatible licenses. Denies unknown registries and git sources. Targets 6 build platforms.",
-      "tags": [
-        "rust",
-        "security",
-        "license-check"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:manifest.json",
-      "type": "config",
-      "name": "Plugin Manifest",
-      "filePath": "manifest.json",
-      "summary": "OxiGuitar plugin manifest: interface 1.4, id oxiguitar.wav, name 'WAV export', settings window enabled, single exporter (wav, audio, .wav extension).",
-      "tags": [
-        "plugin",
-        "manifest",
-        "configuration"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:rustfmt.toml",
-      "type": "config",
-      "name": "Rustfmt Configuration",
-      "filePath": "rustfmt.toml",
-      "summary": "Rustfmt settings: edition 2024, max width 100, field init shorthand.",
-      "tags": [
-        "rust",
-        "formatting",
-        "configuration"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:.github/dependabot.yml",
-      "type": "config",
-      "name": "Dependabot Configuration",
-      "filePath": ".github/dependabot.yml",
-      "summary": "Weekly dependency updates for cargo and github-actions ecosystems. Ignores oxiguitar-* dependencies which are pinned by git tag (interface 1.4 frozen).",
-      "tags": [
-        "automation",
-        "dependency-management",
-        "github-actions"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "document:.github/pull_request_template.md",
+      "id": "file:CHANGELOG.md",
       "type": "document",
-      "name": "PR Template",
-      "filePath": ".github/pull_request_template.md",
-      "summary": "Pull request template: What changed, How to try it, Checklist (tests, docs, CREDITS, corpus, DCO sign-off).",
+      "name": "CHANGELOG",
+      "summary": "Version history",
       "tags": [
-        "documentation",
-        "github",
-        "pr-template"
+        "docs"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": "CHANGELOG.md"
     },
     {
-      "id": "script:scripts/check-dco.sh",
-      "type": "script",
-      "name": "DCO Check Script",
-      "filePath": "scripts/check-dco.sh",
-      "summary": "Shell script verifying DCO sign-off on all commits in a range. Skips Claude GitHub app and Dependabot commits. Used by CI dco job.",
+      "id": "file:CONTRIBUTING.md",
+      "type": "document",
+      "name": "CONTRIBUTING",
+      "summary": "Contributor guidelines",
       "tags": [
-        "dco",
-        "sign-off",
-        "ci",
-        "shell"
+        "docs"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": "CONTRIBUTING.md"
+    },
+    {
+      "id": "file:Cargo.toml",
+      "type": "config",
+      "name": "Cargo.toml",
+      "summary": "Dependencies",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "Cargo.toml"
+    },
+    {
+      "id": "file:clippy.toml",
+      "type": "config",
+      "name": "clippy.toml",
+      "summary": "Clippy config",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "clippy.toml"
+    },
+    {
+      "id": "file:deny.toml",
+      "type": "config",
+      "name": "deny.toml",
+      "summary": "Cargo deny",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "deny.toml"
+    },
+    {
+      "id": "file:rustfmt.toml",
+      "type": "config",
+      "name": "rustfmt.toml",
+      "summary": "Rustfmt config",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "rustfmt.toml"
+    },
+    {
+      "id": "file:manifest.json",
+      "type": "config",
+      "name": "manifest.json",
+      "summary": "Plugin manifest",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "manifest.json"
+    },
+    {
+      "id": "file:build-oxp.sh",
+      "type": "script",
+      "name": "build-oxp.sh",
+      "summary": "Build script",
+      "tags": [
+        "script"
+      ],
+      "complexity": "simple",
+      "filePath": "build-oxp.sh"
+    },
+    {
+      "id": "file:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE",
+      "summary": "Dev guidelines",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "CLAUDE.md"
+    },
+    {
+      "id": "file:docs/manual/src/SUMMARY.md",
+      "type": "document",
+      "name": "SUMMARY.md",
+      "summary": "Table of contents",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/SUMMARY.md"
+    },
+    {
+      "id": "file:docs/manual/src/README.md",
+      "type": "document",
+      "name": "README",
+      "summary": "Manual intro",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/README.md"
+    },
+    {
+      "id": "file:docs/manual/src/features.md",
+      "type": "document",
+      "name": "Features",
+      "summary": "Feature list",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/features.md"
+    },
+    {
+      "id": "file:docs/manual/src/install.md",
+      "type": "document",
+      "name": "Installation",
+      "summary": "Install guide",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/install.md"
+    },
+    {
+      "id": "file:docs/manual/src/usage.md",
+      "type": "document",
+      "name": "Usage",
+      "summary": "Usage guide",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/usage.md"
+    },
+    {
+      "id": "file:docs/manual/src/architecture.md",
+      "type": "document",
+      "name": "Architecture",
+      "summary": "Architecture overview",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "moderate",
+      "filePath": "docs/manual/src/architecture.md"
+    },
+    {
+      "id": "file:docs/manual/src/testing.md",
+      "type": "document",
+      "name": "Testing",
+      "summary": "Testing guide",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/testing.md"
+    },
+    {
+      "id": "file:docs/manual/src/credits.md",
+      "type": "document",
+      "name": "Credits",
+      "summary": "Acknowledgments",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/credits.md"
+    },
+    {
+      "id": "file:docs/manual/src/contributing.md",
+      "type": "document",
+      "name": "Contributing",
+      "summary": "Dev guidelines",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/src/contributing.md"
+    },
+    {
+      "id": "file:.github/dependabot.yml",
+      "type": "config",
+      "name": "dependabot.yml",
+      "summary": "Automated dependency updates",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": ".github/dependabot.yml"
+    },
+    {
+      "id": "file:.github/pull_request_template.md",
+      "type": "docs",
+      "name": "PR template",
+      "summary": "PR checklist",
+      "tags": [
+        "docs"
+      ],
+      "complexity": "simple",
+      "filePath": ".github/pull_request_template.md"
+    },
+    {
+      "id": "file:docs/manual/book.toml",
+      "type": "config",
+      "name": "book.toml",
+      "summary": "mdBook config",
+      "tags": [
+        "config"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/manual/book.toml"
+    },
+    {
+      "id": "file:scripts/apt-install.sh",
+      "type": "script",
+      "name": "apt-install.sh",
+      "summary": "System dependency installer",
+      "tags": [
+        "script"
+      ],
+      "complexity": "simple",
+      "filePath": "scripts/apt-install.sh"
+    },
+    {
+      "id": "file:scripts/check-dco.sh",
+      "type": "script",
+      "name": "check-dco.sh",
+      "summary": "DCO sign-off checker",
+      "tags": [
+        "script"
+      ],
+      "complexity": "simple",
+      "filePath": "scripts/check-dco.sh"
+    },
+    {
+      "id": "file:scripts/test-all.py",
+      "type": "script",
+      "name": "test-all.py",
+      "summary": "Test runner",
+      "tags": [
+        "script"
+      ],
+      "complexity": "simple",
+      "filePath": "scripts/test-all.py"
     },
     {
       "id": "file:src/lib.rs",
       "type": "file",
-      "name": "WAV Plugin Implementation",
-      "filePath": "src/lib.rs",
-      "summary": "Core implementation: WavPlugin (Plugin trait), Wav (AudioExporter trait), Window (settings UI via Tab trait), Format (WAV header generation with PCM/float support), Depth enum (16/24/32-bit), Export struct (dither with xorshift). Exports: Depth, Format, Wav, Window, WavPlugin, bytes, from_settings, header. 482 lines with 5 unit tests.",
+      "name": "lib.rs",
+      "summary": "wav lib.rs",
       "tags": [
-        "rust",
-        "plugin",
-        "wav",
-        "audio",
-        "export",
-        "core",
-        "tested"
+        "rust"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "filePath": "src/lib.rs"
+    },
+    {
+      "id": "file:src/choices.rs",
+      "type": "file",
+      "name": "choices.rs",
+      "summary": "wav choices.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "moderate",
+      "filePath": "src/choices.rs"
+    },
+    {
+      "id": "file:src/flac.rs",
+      "type": "file",
+      "name": "flac.rs",
+      "summary": "wav flac.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "moderate",
+      "filePath": "src/flac.rs"
+    },
+    {
+      "id": "file:src/mp3.rs",
+      "type": "file",
+      "name": "mp3.rs",
+      "summary": "wav mp3.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "moderate",
+      "filePath": "src/mp3.rs"
+    },
+    {
+      "id": "file:src/opus.rs",
+      "type": "file",
+      "name": "opus.rs",
+      "summary": "wav opus.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "moderate",
+      "filePath": "src/opus.rs"
+    },
+    {
+      "id": "file:src/pcm.rs",
+      "type": "file",
+      "name": "pcm.rs",
+      "summary": "wav pcm.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "simple",
+      "filePath": "src/pcm.rs"
+    },
+    {
+      "id": "file:src/wav.rs",
+      "type": "file",
+      "name": "wav.rs",
+      "summary": "wav wav.rs",
+      "tags": [
+        "rust"
+      ],
+      "complexity": "moderate",
+      "filePath": "src/wav.rs"
     },
     {
       "id": "file:tests/contract.rs",
       "type": "file",
-      "name": "Contract Test Suite",
-      "filePath": "tests/contract.rs",
-      "summary": "Integration test that builds the .oxp file and validates it through OxiGuitar's plugin host. Verifies the exporter wav passes all checks.",
+      "name": "contract.rs",
+      "summary": "wav contract.rs",
       "tags": [
-        "rust",
-        "test",
-        "contract",
-        "integration"
+        "rust"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "filePath": "tests/contract.rs"
+    },
+    {
+      "id": "file:ui/export.slint",
+      "type": "file",
+      "name": "export.slint",
+      "summary": "wav export.slint",
+      "tags": [
+        "slint",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "ui/export.slint"
     }
   ],
   "edges": [
     {
       "source": "file:.github/workflows/ci.yml",
+      "target": "file:.github/workflows/docs.yml",
+      "type": "related",
+      "direction": "bidirectional",
+      "weight": 0.5
+    },
+    {
+      "source": "file:.github/workflows/publish.yml",
       "target": "file:.github/workflows/release.yml",
-      "type": "triggers",
-      "direction": "forward"
+      "type": "related",
+      "direction": "bidirectional",
+      "weight": 0.5
     },
     {
-      "source": "file:.github/workflows/release.yml",
-      "target": "file:.github/workflows/publish.yml",
-      "type": "triggers",
-      "direction": "forward"
+      "source": "file:build-oxp.sh",
+      "target": "file:Cargo.toml",
+      "type": "uses",
+      "direction": "forward",
+      "weight": 0.8
     },
     {
-      "source": "config:Cargo.toml",
-      "target": "config:clippy.toml",
-      "type": "configures",
-      "direction": "forward"
+      "source": "file:deny.toml",
+      "target": "file:Cargo.toml",
+      "type": "validates",
+      "direction": "forward",
+      "weight": 0.9
     },
     {
-      "source": "config:Cargo.toml",
-      "target": "config:rustfmt.toml",
-      "type": "configures",
-      "direction": "forward"
-    },
-    {
-      "source": "config:Cargo.toml",
-      "target": "config:deny.toml",
-      "type": "configures",
-      "direction": "forward"
-    },
-    {
-      "source": "document:README.md",
-      "target": "document:CONTRIBUTING.md",
+      "source": "file:manifest.json",
+      "target": "file:Cargo.toml",
       "type": "references",
-      "direction": "forward"
+      "direction": "forward",
+      "weight": 0.7
     },
     {
-      "source": "document:README.md",
-      "target": "document:CHANGELOG.md",
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/README.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/features.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/install.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/usage.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/architecture.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/SUMMARY.md",
+      "target": "file:docs/manual/src/testing.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/manual/src/architecture.md",
+      "target": "file:docs/manual/src/features.md",
       "type": "references",
-      "direction": "forward"
+      "direction": "forward",
+      "weight": 0.6
     },
     {
-      "source": "script:build-oxp.sh",
-      "target": "config:Cargo.toml",
-      "type": "reads",
-      "direction": "forward"
-    },
-    {
-      "source": "config:manifest.json",
-      "target": "config:Cargo.toml",
+      "source": "file:docs/manual/src/usage.md",
+      "target": "file:docs/manual/src/install.md",
       "type": "references",
-      "direction": "forward"
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:docs/manual/src/features.md",
+      "target": "file:docs/manual/src/testing.md",
+      "type": "references",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:README.md",
+      "target": "file:docs/manual/src/README.md",
+      "type": "links_to",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:docs/manual/src/testing.md",
+      "target": "file:docs/manual/src/features.md",
+      "type": "references",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/manual/src/contributing.md",
+      "target": "file:docs/manual/src/architecture.md",
+      "type": "references",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/manual/src/architecture.md",
+      "target": "file:docs/manual/src/usage.md",
+      "type": "described_in",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:docs/manual/book.toml",
+      "target": "file:docs/manual/src/SUMMARY.md",
+      "type": "references",
+      "direction": "forward",
+      "weight": 0.7
     },
     {
       "source": "file:src/lib.rs",
-      "target": "config:manifest.json",
-      "type": "implements",
-      "direction": "forward"
+      "target": "file:src/choices.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib.rs",
+      "target": "file:src/flac.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib.rs",
+      "target": "file:src/mp3.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib.rs",
+      "target": "file:src/opus.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib.rs",
+      "target": "file:src/pcm.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib.rs",
+      "target": "file:src/wav.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.8
     },
     {
       "source": "file:src/lib.rs",
       "target": "file:tests/contract.rs",
-      "type": "tested_by",
-      "direction": "forward",
-      "description": "Direction corrected (was test → production)"
-    },
-    {
-      "source": "file:tests/contract.rs",
-      "target": "script:build-oxp.sh",
-      "type": "depends_on",
-      "direction": "forward"
-    },
-    {
-      "source": "script:scripts/check-dco.sh",
-      "target": "document:CONTRIBUTING.md",
-      "type": "implements",
-      "direction": "forward"
-    },
-    {
-      "source": "file:.github/workflows/ci.yml",
-      "target": "script:scripts/check-dco.sh",
-      "type": "uses",
-      "direction": "forward"
-    },
-    {
-      "source": "file:.github/workflows/ci.yml",
-      "target": "file:src/lib.rs",
       "type": "tests",
-      "direction": "forward"
+      "direction": "forward",
+      "weight": 0.8
     },
     {
-      "source": "file:.github/workflows/ci.yml",
-      "target": "script:build-oxp.sh",
-      "type": "uses",
-      "direction": "forward"
-    },
-    {
-      "source": "file:.github/workflows/release.yml",
-      "target": "script:build-oxp.sh",
-      "type": "uses",
-      "direction": "forward"
-    },
-    {
-      "source": "config:.github/dependabot.yml",
-      "target": "config:Cargo.toml",
-      "type": "monitors",
-      "direction": "forward"
+      "source": "file:ui/export.slint",
+      "target": "file:src/lib.rs",
+      "type": "depends-on",
+      "direction": "forward",
+      "weight": 0.7
     }
   ],
   "layers": [
     {
-      "id": "layer:core-plugin",
-      "name": "Core Plugin",
-      "description": "The main Rust source implementing the WAV export plugin: WavPlugin, Wav, Window, Format, Depth, and Export types.",
-      "nodeIds": [
-        "file:src/lib.rs"
-      ]
-    },
-    {
-      "id": "layer:tests",
-      "name": "Tests",
-      "description": "Test files that validate the plugin's behavior and contract compliance.",
-      "nodeIds": [
-        "file:tests/contract.rs"
-      ]
-    },
-    {
-      "id": "layer:configuration",
-      "name": "Configuration",
-      "description": "Build and project configuration: Cargo.toml, clippy.toml, rustfmt.toml, deny.toml, manifest.json, dependabot.yml.",
-      "nodeIds": [
-        "config:Cargo.toml",
-        "config:clippy.toml",
-        "config:rustfmt.toml",
-        "config:deny.toml",
-        "config:manifest.json",
-        "config:.github/dependabot.yml"
-      ]
-    },
-    {
-      "id": "layer:ci-cd",
       "name": "CI/CD Pipelines",
-      "description": "GitHub Actions workflows for CI, release builds, and publishing.",
-      "nodeIds": [
+      "nodes": [
         "file:.github/workflows/ci.yml",
-        "file:.github/workflows/release.yml",
-        "file:.github/workflows/publish.yml"
-      ]
+        "file:.github/workflows/docs.yml",
+        "file:.github/workflows/publish.yml",
+        "file:.github/workflows/release.yml"
+      ],
+      "description": "CI/CD Pipelines layer"
     },
     {
-      "id": "layer:scripts",
-      "name": "Build Scripts",
-      "description": "Shell scripts for building the .oxp file and verifying DCO sign-off.",
-      "nodeIds": [
-        "script:build-oxp.sh",
-        "script:scripts/check-dco.sh"
-      ]
-    },
-    {
-      "id": "layer:documentation",
       "name": "Documentation",
-      "description": "Project documentation: README, contributing guide, changelog, Claude working guide, and PR template.",
-      "nodeIds": [
-        "document:README.md",
-        "document:CONTRIBUTING.md",
-        "document:CHANGELOG.md",
-        "document:CLAUDE.md",
-        "document:.github/pull_request_template.md"
-      ]
+      "nodes": [
+        "file:README.md",
+        "file:CHANGELOG.md",
+        "file:CONTRIBUTING.md",
+        "file:docs/manual/src/SUMMARY.md",
+        "file:docs/manual/src/README.md",
+        "file:docs/manual/src/features.md",
+        "file:docs/manual/src/install.md",
+        "file:docs/manual/src/usage.md",
+        "file:docs/manual/src/architecture.md",
+        "file:docs/manual/src/testing.md",
+        "file:docs/manual/src/credits.md",
+        "file:docs/manual/src/contributing.md",
+        "file:docs/manual/book.toml"
+      ],
+      "description": "Documentation layer"
+    },
+    {
+      "name": "Configuration",
+      "nodes": [
+        "file:Cargo.toml",
+        "file:clippy.toml",
+        "file:deny.toml",
+        "file:rustfmt.toml"
+      ],
+      "description": "Configuration layer"
+    },
+    {
+      "name": "Plugin Source",
+      "nodes": [
+        "file:manifest.json",
+        "file:CLAUDE.md",
+        "file:.github/dependabot.yml",
+        "file:.github/pull_request_template.md",
+        "file:src/lib.rs",
+        "file:src/choices.rs",
+        "file:src/flac.rs",
+        "file:src/mp3.rs",
+        "file:src/opus.rs",
+        "file:src/pcm.rs",
+        "file:src/wav.rs"
+      ],
+      "description": "Plugin Source layer"
+    },
+    {
+      "name": "Scripts",
+      "nodes": [
+        "file:build-oxp.sh",
+        "file:scripts/apt-install.sh",
+        "file:scripts/check-dco.sh",
+        "file:scripts/test-all.py"
+      ],
+      "description": "Scripts layer"
+    },
+    {
+      "name": "Test Infrastructure",
+      "nodes": [
+        "file:tests/contract.rs"
+      ],
+      "description": "Test Infrastructure layer"
+    },
+    {
+      "name": "UI",
+      "nodes": [
+        "file:ui/export.slint"
+      ],
+      "description": "UI layer"
     }
   ],
   "tour": [
     {
-      "order": 1,
-      "title": "Project Overview",
-      "description": "Start with the README to understand what this project is: a WAV export plugin for OxiGuitar, a free guitar tablature and score viewer/editor/player. The plugin adds File → Export → WAV Audio functionality.",
-      "nodeIds": [
-        "document:README.md"
-      ]
+      "title": "Plugin Overview",
+      "nodeId": "file:README.md",
+      "summary": "oxiguitar-wav plugin overview",
+      "layer": "Documentation"
     },
     {
-      "order": 2,
-      "title": "Plugin Manifest",
-      "description": "Examine the plugin manifest to see how OxiGuitar discovers and configures this plugin: interface version, exporter ID, settings window, and file extension.",
-      "nodeIds": [
-        "config:manifest.json"
-      ]
+      "title": "Plugin Entry",
+      "nodeId": "file:src/lib.rs",
+      "summary": "Plugin entry point",
+      "layer": "Plugin Source"
     },
     {
-      "order": 3,
-      "title": "Core Implementation",
-      "description": "Dive into the main source file: WavPlugin (the Plugin trait implementation), Wav (the AudioExporter that converts audio samples to WAV bytes), Window (the settings UI), Format (WAV header generation), Depth (bit depth enum), and Export (dithering state).",
-      "nodeIds": [
-        "file:src/lib.rs"
-      ]
+      "title": "",
+      "nodeId": "file:ui/export.slint",
+      "summary": "ui/ component",
+      "layer": "UI"
     },
     {
-      "order": 4,
-      "title": "Build System",
-      "description": "Review Cargo.toml for dependencies and build configuration, then build-oxp.sh for creating the distributable .oxp plugin file across platforms.",
-      "nodeIds": [
-        "config:Cargo.toml",
-        "script:build-oxp.sh"
-      ]
+      "title": "Cargo.toml",
+      "nodeId": "file:Cargo.toml",
+      "summary": "Cargo.toml component",
+      "layer": "Configuration"
     },
     {
-      "order": 5,
-      "title": "Testing & Quality",
-      "description": "Explore the contract test that builds and validates the .oxp file through OxiGuitar's plugin host, the unit tests in lib.rs, and the CI pipeline that runs fmt, lint, test, deny, and DCO checks on 6 platforms.",
-      "nodeIds": [
-        "file:tests/contract.rs",
-        "file:.github/workflows/ci.yml"
-      ]
-    },
-    {
-      "order": 6,
-      "title": "Release & Distribution",
-      "description": "Understand the release workflow (builds packages for all platforms, creates draft releases on v* tags) and the publish workflow (notifies package repositories and winget).",
-      "nodeIds": [
-        "file:.github/workflows/release.yml",
-        "file:.github/workflows/publish.yml"
-      ]
+      "title": "ci.yml",
+      "nodeId": "file:.github/workflows/ci.yml",
+      "summary": ".github/workflows/ci.yml component",
+      "layer": "CI/CD Pipelines"
     }
   ]
 }
